@@ -1,0 +1,60 @@
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.53);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 1000;
+}
+.modalOverlay .modalContent {
+  background-color: #fff;
+  width: 467px;
+  height: 100%;
+  padding: 20px;
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.modalOverlay .modalContent .closeIcon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s ease;
+}
+.modalOverlay .modalContent .function-list {
+  margin-top: 20px;
+}
+.modalOverlay .modalContent .function-item {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modalOverlay .modalContent .function-item button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.modalOverlay .modalContent .function-item button:hover {
+  background-color: #007bff;
+}
+
+/*# sourceMappingURL=Modal.module.css.map */
