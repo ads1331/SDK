@@ -1,50 +1,112 @@
-# React + TypeScript + Vite
+# Правила (начало работы)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Клонируете репозиторий на свою локальную машину:
 
-Currently, two official plugins are available:
+- git clone https://github.com/SergeiKostiaev/SDK.git
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Создаете и переходите на ветку(переход автоматический):
 
-## Expanding the ESLint configuration
+- git checkout -b *Название_ветки*
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Начинаете разрабатывать!
+### Важно! Название ветки совпадает с наименованием фичи/задачей(на англ)
 
-- Configure the top-level `parserOptions` property like this:
+## Закончили разработку
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- git add .
+- git commit -m "Тут подробное описание, что сделали на анг"
+- git push -u origin *Название_ветки* / git push
+
+Не забудьте проверить, что пуш прошел успешно!
+
+Так же на GitHub делаем PullRequest
+
+# Сами Merge не делаем!
+
+## Запуск и тестирование своей части локально
+
+- npm run dev
+
+## Вид заполнения SASS
+
+```sass
+@import "../App"
+
+.modalOverlay
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  background-color: $overlay
+  display: flex
+  justify-content: flex-end
+  z-index: 1000
+  .modalContent
+    background-color: $white
+    width: 467px
+    height: 100%
+    padding: 20px
+    box-shadow: -4px 0 10px $bxShadow
+    position: relative
+    display: flex
+    flex-direction: column
+```
+## Компонент UI
+
+- Сам компонент Example.tsx
+- Стили для компонента Example.module.tsx
+
+Пример компонента
+```tsx
+import styles from './Modal.module.sass';
+
+const Modal = ({ onClose }) => {
+    return (
+        <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+                <span className={styles.closeIcon} onClick={onClose}>
+                    ✖
+                </span>
+                <h2>Голосование за функции</h2>
+                <div className={styles.functionList}>
+                    <div className={styles.functionItem}>
+                        <p>Функция 1</p>
+                        <button>Голосовать</button>
+                    </div>
+                    <div className={styles.functionItem}>
+                        <p>Функция 2</p>
+                        <button>Голосовать</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Modal;
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Используем следующий стек:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+Backend
+1. Node.Js
+2. Rest API
+3. БД(MySql)
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+Frontend
+1. React (Vite)
+2. TS (для избежания ошибок)
+3. SASS(Стили)
+4. UI компоненты(если понадобятся)
+
+Общее
+1. GIT
+2. GitHub
+3. Docker(при необходимости)
+
+- десктоп версия
+
+- P.S. (из инета что такое SDK)
+
+Набор инструментов, библиотек, документации и примеров кода, которые предоставляются разработчикам для интеграции определенного функционала в их приложения. SDK упрощает и стандартизирует процесс добавления определенных функций в программные продукты.
