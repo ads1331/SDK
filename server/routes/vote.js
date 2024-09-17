@@ -2,18 +2,19 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// Получение всех функций для голосования
-router.get('/vote', async (req, res) => {
+// Получение всех вариантов голосования
+router.get('/', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM vote');
         res.json(rows);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Database error' });
+        res.status(500).json({ message: 'Ошибка базы данных' });
     }
 });
 
-router.post('/vote', async (req, res) => {
+// Принятие голоса
+router.post('/', async (req, res) => {
     const { id_functions, id_user, ip, id_vote } = req.body;
 
     if (!id_functions || !id_user || !ip || !id_vote) {

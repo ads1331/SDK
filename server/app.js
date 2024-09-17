@@ -4,6 +4,7 @@ const cors = require('cors');
 const db = require('./db');
 const functionsRouter = require('./routes/functions');
 const featuresRouter = require('./routes/features');
+const voteRouter = require('./routes/vote');
 
 const app = express();
 const port = 3000;
@@ -13,10 +14,10 @@ app.use(cors({
 }));
 
 app.use(bodyParser.json());
-app.use('/api/functions', functionsRouter);
-app.use('/api/vote', require('./routes/vote'));
-app.use('/api', featuresRouter);
 
+app.use('/api/functions', functionsRouter);
+app.use('/api/features', featuresRouter);
+app.use('/api/votes', voteRouter);
 
 // Получение всех постов (GET /api/posts)
 app.get('/api/posts', async (req, res) => {
@@ -30,32 +31,30 @@ app.get('/api/posts', async (req, res) => {
   }
 });
 
-
 // Получение поста по ID (GET /api/posts/:id)
 app.get('/api/posts/:id', async (req, res) => {
-    const postId = req.params.id;
-    try {
-      // Получаем пост
-      const [postRows] = await db.query('SELECT * FROM functions WHERE id = ?', [postId]);
-      if (postRows.length === 0) {
-        return res.status(404).json({ message: 'Пост не найден' });
-      }
-
-      const post = postRows[0];
-
-      // Получаем варианты голосования для этого поста
-      const [voteRows] = await db.query('SELECT * FROM vote WHERE id_functions = ?', [postId]);
-
-      // Добавляем варианты голосования к посту
-      post.votes = voteRows;
-
-      res.json(post);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Ошибка базы данных' });
+  const postId = req.params.id;
+  try {
+    // Получаем функцию
+    const [functionRows] = await db.query('SELECT * FROM functions WHERE id = ?', [postId]);
+    if (functionRows.length === 0) {
+      return res.status(404).json({ message: 'Функция не найдена' });
     }
-  });
 
+    const func = functionRows[0];
+
+    // Получаем фичи для этой функции
+    const [featureRows] = await db.query('SELECT * FROM features WHERE id_functions = ?', [postId]);
+
+    // Добавляем фичи к функции
+    func.features = featureRows;
+
+    res.json(func);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ошибка базы данных' });
+  }
+});
 
 // Добавление нового поста (POST /api/posts) - только для админа
 // TODO: Добавить проверку авторизации и роли администратора
@@ -63,8 +62,8 @@ app.post('/api/posts', async (req, res) => {
   const { title, description, status } = req.body;
   try {
     const [result] = await db.query(
-      'INSERT INTO functions (title, description, status) VALUES (?, ?, ?)',
-      [title, description, status || 'pending']
+        'INSERT INTO functions (title, description, status) VALUES (?, ?, ?)',
+        [title, description, status || 'pending']
     );
     res.status(201).json({ id: result.insertId, title, description, status });
   } catch (error) {
@@ -80,8 +79,8 @@ app.patch('/api/posts/:id', async (req, res) => {
   const { title, description, status } = req.body;
   try {
     const [result] = await db.query(
-      'UPDATE functions SET title = ?, description = ?, status = ? WHERE id = ?',
-      [title, description, status, postId]
+        'UPDATE functions SET title = ?, description = ?, status = ? WHERE id = ?',
+        [title, description, status, postId]
     );
     if (result.affectedRows > 0) {
       res.json({ message: 'Пост обновлен' });
@@ -111,94 +110,53 @@ app.delete('/api/posts/:id', async (req, res) => {
   }
 });
 
-// Принятие голосов (POST /api/posts/:id/votes) !
-// app.post('/api/posts/:id/votes', async (req, res) => {
-//   const postId = req.params.id; // Получаем postId из URL
-//   const { id_user, ip, id_vote } = req.body;
-//
-//   try {
-//     // Проверка, существует ли пост
-//     const [post] = await db.query('SELECT * FROM functions WHERE id = ?', [postId]);
-//     if (post.length === 0) {
-//       return res.status(404).json({ message: 'Пост не найден' });
-//     }
-//
-//     // Добавление голоса
-//     const [result] = await db.query(
-//         'INSERT INTO votes (id_functions, id_user, ip, id_vote) VALUES (?, ?, ?, ?)',
-//         [postId, id_user, ip, id_vote]
-//     );
-//     res.status(201).json({ message: 'Голос принят', vote_id: result.insertId });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Ошибка базы данных' });
-//   }
-// });
+// Принятие голосов (POST /api/votes)
 app.post('/api/votes', async (req, res) => {
   const { id_user, id_functions, id_vote, ip } = req.body;
 
-  console.log('Данные о голосовании:', { id_user, id_functions, id_vote, ip });
+  // Проверяем, что все необходимые данные присутствуют
+  if (!id_user || !id_functions || !id_vote || !ip) {
+    return res.status(400).json({ message: 'Недостаточно данных для голосования' });
+  }
 
   try {
-    // Добавление голоса
+    // Вставляем данные о голосовании в таблицу votes
     const [result] = await db.query(
         'INSERT INTO votes (id_user, id_functions, id_vote, ip) VALUES (?, ?, ?, ?)',
         [id_user, id_functions, id_vote, ip]
     );
-    res.status(201).json({ message: 'Голос принят', vote_id: result.insertId });
+
+    // Отправляем успешный ответ клиенту
+    res.status(201).json({ message: 'Голос успешно зарегистрирован', vote_id: result.insertId });
   } catch (error) {
-    console.error('Ошибка БД:', error);
-    res.status(500).json({ message: 'Ошибка БД' });
+    console.error(error);
+    res.status(500).json({ message: 'Ошибка базы данных' });
   }
 });
 
-app.post('/api/votes', async (req, res) => {
-    const { id_user, id_functions, id_vote, ip } = req.body;
+// Добавление нового варианта голосования (POST /api/vote)
+app.post('/api/vote', async (req, res) => {
+  const { id_functions, title } = req.body;
 
-    // Проверяем, что все необходимые данные присутствуют
-    if (!id_user || !id_functions || !id_vote || !ip) {
-      return res.status(400).json({ message: 'Недостаточно данных для голосования' });
-    }
+  // Проверяем, что все необходимые данные присутствуют
+  if (!id_functions || !title) {
+    return res.status(400).json({ message: 'Недостаточно данных для добавления варианта голосования' });
+  }
 
-    try {
-      // Вставляем данные о голосовании в таблицу votes
-      const [result] = await db.query(
-        'INSERT INTO votes (id_user, id_functions, id_vote, ip) VALUES (?, ?, ?, ?)',
-        [id_user, id_functions, id_vote, ip]
-      );
-
-      // Отправляем успешный ответ клиенту
-      res.status(201).json({ message: 'Голос успешно зарегистрирован', vote_id: result.insertId });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Ошибка базы данных' });
-    }
-  });
-
-  app.post('/api/vote', async (req, res) => {
-    const { id_functions, title } = req.body;
-
-    // Проверяем, что все необходимые данные присутствуют
-    if (!id_functions || !title) {
-      return res.status(400).json({ message: 'Недостаточно данных для добавления варианта голосования' });
-    }
-
-    try {
-      // Вставляем новый вариант голосования в таблицу vote
-      const [result] = await db.query(
+  try {
+    // Вставляем новый вариант голосования в таблицу vote
+    const [result] = await db.query(
         'INSERT INTO vote (id_functions, title) VALUES (?, ?)',
         [id_functions, title]
-      );
+    );
 
-      // Отправляем успешный ответ клиенту
-      res.status(201).json({ message: 'Вариант голосования успешно добавлен', vote_id: result.insertId });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Ошибка базы данных' });
-    }
-  });
-
-
+    // Отправляем успешный ответ клиенту
+    res.status(201).json({ message: 'Вариант голосования успешно добавлен', vote_id: result.insertId });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ошибка базы данных' });
+  }
+});
 
 // Запуск сервера
 app.listen(port, () => {

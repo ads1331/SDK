@@ -7,13 +7,14 @@ const Modal = ({ onClose }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedFeature, setSelectedFeature] = useState('');
+    const [selectedFeature, setSelectedFeature] = useState(null);
     const [isVoteSuccess, setIsVoteSuccess] = useState(false);
     const [categories, setCategories] = useState([]);
     const [features, setFeatures] = useState([]);
 
+    // Загрузка категорий
     useEffect(() => {
-        const fetchFunctions = async () => {
+        const fetchCategories = async () => {
             try {
                 const data = await getFunctions();
                 setCategories(data);
@@ -22,11 +23,12 @@ const Modal = ({ onClose }) => {
             }
         };
 
-        fetchFunctions();
+        fetchCategories();
     }, []);
 
+    // Загрузка всех фич
     useEffect(() => {
-        const fetchAllFeatures = async () => {
+        const fetchFeatures = async () => {
             try {
                 const response = await fetch('http://localhost:3000/api/features');
                 if (!response.ok) {
@@ -39,28 +41,28 @@ const Modal = ({ onClose }) => {
             }
         };
 
-        fetchAllFeatures();
+        fetchFeatures();
     }, []);
 
-    const selectCategory = (category) => {
-        console.log('Selected category:', category);  // Добавьте это для отладки
-        setSelectedCategory(category);
-    };
+    // Фильтрация фич по выбранной категории
+    const filteredFeatures = features.filter(feature => feature.id_functions === selectedCategory?.id);
 
+    // Переход к следующему шагу
     const goToNextStep = () => {
         setStep(step + 1);
     };
 
+    // Обработка голосования
     const handleVote = async (feature) => {
         try {
             const userId = 2;  // Заменить на динамически или придумать как будет идти учет пользователя
-            // Получаю IP
+            // Получаем IP
             const response = await fetch('https://api.ipify.org?format=json');
             const data = await response.json();
             const ip = data.ip;
 
             const voteData = {
-                id_functions: feature.id,
+                id_functions: feature.id_functions,
                 id_user: userId,
                 id_vote: 2,
                 ip
@@ -84,6 +86,7 @@ const Modal = ({ onClose }) => {
         }, 5000);
     };
 
+    // Проверка валидности формы
     const isFormValid = name.trim() !== '' && email.trim() !== '';
 
     return (
@@ -137,18 +140,15 @@ const Modal = ({ onClose }) => {
                         <p className={styles.welc_about}>Выберите функционал для голосования</p>
                         <div className={styles.functionList}>
                             {categories.length > 0 ? (
-                                categories.map((category) => {
-                                    console.log('Rendering category:', category);  // Добавьте эту строку
-                                    return (
-                                        <div
-                                            key={category.id}
-                                            className={`${styles.functionItem} ${selectedCategory?.id === category.id ? styles.selectedItem : ''}`}
-                                            onClick={() => selectCategory(category)}
-                                        >
-                                            <p>{category.title}</p>
-                                        </div>
-                                    );
-                                })
+                                categories.map((category) => (
+                                    <div
+                                        key={category.id}
+                                        className={`${styles.functionItem} ${selectedCategory?.id === category.id ? styles.selectedItem : ''}`}
+                                        onClick={() => setSelectedCategory(category)}
+                                    >
+                                        <p>{category.title}</p>
+                                    </div>
+                                ))
                             ) : (
                                 <p>Нет доступных категорий для голосования.</p>
                             )}
@@ -169,8 +169,8 @@ const Modal = ({ onClose }) => {
                         <h2 className={styles.welc_title}>Голосование за: {selectedCategory.title}</h2>
                         <p className={styles.welc_about}>Оставьте свой голос за понравившуюся вам функцию</p>
                         <div className={styles.featureList}>
-                            {features.length > 0 ? (
-                                features.map((feature) => (
+                            {filteredFeatures.length > 0 ? (
+                                filteredFeatures.map((feature) => (
                                     <div key={feature.id} className={styles.featureItem}>
                                         <div className={styles.about_feature}>
                                             <p>{feature.title}</p>
@@ -193,6 +193,7 @@ const Modal = ({ onClose }) => {
                         <h2>Голосование</h2>
                         <p>Ваш голос отправлен!</p>
                         <img src="./check.png" alt="check"/>
+                        <p>Окно закроется автоматически...</p>
                     </div>
                 )}
             </div>
