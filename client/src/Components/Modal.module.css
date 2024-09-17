@@ -148,11 +148,11 @@
 .modalOverlay .modalContent .featureItem button:hover {
   background-color: #5095FB;
 }
-.modalOverlay .modalContent .nextButtonContainer {
+.modalOverlay .modalContent .nextButtonContainer, .modalOverlay .modalContent .buttonContainer {
   margin-top: 20px;
   text-align: center;
 }
-.modalOverlay .modalContent .nextButtonContainer .nextButton {
+.modalOverlay .modalContent .nextButtonContainer .nextButton, .modalOverlay .modalContent .buttonContainer .nextButton {
   width: 100%;
   display: block;
   border-radius: 10px;
@@ -163,7 +163,22 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-.modalOverlay .modalContent .nextButtonContainer .nextButton:hover {
+.modalOverlay .modalContent .nextButtonContainer .nextButton:hover, .modalOverlay .modalContent .buttonContainer .nextButton:hover {
+  background-color: #5095FB;
+}
+.modalOverlay .modalContent .nextButtonContainer .prevButton, .modalOverlay .modalContent .buttonContainer .prevButton {
+  width: 100%;
+  margin-top: 5px;
+  display: block;
+  border-radius: 10px;
+  padding: 19px 0;
+  border: 1px solid #0650BF;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.modalOverlay .modalContent .nextButtonContainer .prevButton:hover, .modalOverlay .modalContent .buttonContainer .prevButton:hover {
   background-color: #5095FB;
 }
 .modalOverlay .modalContent .voteSuccess {

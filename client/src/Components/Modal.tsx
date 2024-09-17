@@ -52,6 +52,10 @@ const Modal = ({ onClose }) => {
         setStep(step + 1);
     };
 
+    const goToPreviousStep = () => {
+        setStep(step - 1);
+    };
+
     // Обработка голосования
     const handleVote = async (feature) => {
         try {
@@ -159,6 +163,9 @@ const Modal = ({ onClose }) => {
                                 <button className={styles.nextButton} onClick={goToNextStep}>
                                     Далее
                                 </button>
+                                <button className={styles.prevButton} onClick={goToPreviousStep} disabled={step === 1}>
+                                    Назад
+                                </button>
                             </div>
                         )}
                     </>
@@ -184,6 +191,12 @@ const Modal = ({ onClose }) => {
                             ) : (
                                 <p>Нет доступных функций для голосования.</p>
                             )}
+                        </div>
+
+                        <div className={styles.buttonContainer}>
+                            <button className={styles.prevButton} onClick={goToPreviousStep}>
+                                Назад
+                            </button>
                         </div>
                     </>
                 )}
