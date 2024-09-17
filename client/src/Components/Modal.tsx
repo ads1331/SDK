@@ -11,6 +11,7 @@ const Modal = ({ onClose }) => {
     const [isVoteSuccess, setIsVoteSuccess] = useState(false);
     const [categories, setCategories] = useState([]);
     const [features, setFeatures] = useState([]);
+    const [emailError, setEmailError] = useState('');
 
     // Загрузка категорий
     useEffect(() => {
@@ -90,8 +91,27 @@ const Modal = ({ onClose }) => {
         }, 5000);
     };
 
-    // Проверка валидности формы
-    const isFormValid = name.trim() !== '' && email.trim() !== '';
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+    };
+
+    const handleEmailChange = (e) => {
+        const emailValue = e.target.value;
+        setEmail(emailValue);
+
+        // Валидация email
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailPattern.test(emailValue)) {
+            setEmailError('');
+        } else {
+            setEmailError('Указан неверный Емейл');
+        }
+    };
+
+
+    const isFormValid = () => {
+        return name.trim() !== '' && emailError === '';
+    };
 
     return (
         <div className={styles.modalOverlay}>
@@ -110,7 +130,7 @@ const Modal = ({ onClose }) => {
                                 <input
                                     type="text"
                                     value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    onChange={handleNameChange}
                                     placeholder="Иван"
                                     className={styles.inpt_name}
                                 />
@@ -121,16 +141,17 @@ const Modal = ({ onClose }) => {
                                 <input
                                     type="email"
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={handleEmailChange}
                                     placeholder="Введите ваш email"
                                     className={styles.inpt_name}
                                 />
+                                {emailError && <p className={`${styles.error} ${emailError ? styles.show : ''}`}>{emailError}</p>}
                             </div>
                         </div>
 
-                        {isFormValid && (
+                        {isFormValid() && (
                             <div className={styles.nextButtonContainer}>
-                                <button className={styles.nextButton} onClick={goToNextStep}>
+                                <button className={styles.nextButton} onClick={() => setStep(step + 1)}>
                                     Далее
                                 </button>
                             </div>

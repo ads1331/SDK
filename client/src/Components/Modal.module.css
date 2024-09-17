@@ -64,6 +64,20 @@
   font-family: Roboto, sans-serif;
   color: #E1E0E0;
 }
+.modalOverlay .modalContent .formGroupInpt .formGroup .error {
+  font-family: Roboto, sans-serif;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 2px;
+  font-size: 14px;
+  margin-top: 10px;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  background-color: #5095FB;
+}
+.modalOverlay .modalContent .formGroupInpt .formGroup .error.show {
+  opacity: 1;
+}
 .modalOverlay .modalContent .closeIcon {
   position: absolute;
   top: 10px;
