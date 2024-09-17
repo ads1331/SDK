@@ -1,11 +1,3 @@
-*,
-::before,
-::after {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -27,6 +19,51 @@
   display: flex;
   flex-direction: column;
 }
+.modalOverlay .modalContent .welc_title {
+  text-align: center;
+  margin: 41px 0 15px 0;
+  font-size: 24px;
+  font-family: Roboto, sans-serif;
+}
+.modalOverlay .modalContent .welc_about {
+  text-align: center;
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+  color: #797777;
+  font-size: 15px;
+  font-family: Roboto, sans-serif;
+  border-bottom: 1px solid #E1E0E0;
+}
+.modalOverlay .modalContent .formGroupInpt {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.modalOverlay .modalContent .formGroupInpt .formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+.modalOverlay .modalContent .formGroupInpt .formGroup label {
+  color: #686868;
+  font-size: 15px;
+  margin-bottom: 15px;
+  font-family: Roboto, sans-serif;
+}
+.modalOverlay .modalContent .formGroupInpt .formGroup .inpt_name {
+  border-radius: 10px;
+  border: 1px solid #BFBEBE;
+  padding: 12px 14px;
+  font-size: 18px;
+}
+.modalOverlay .modalContent .formGroupInpt .formGroup .inpt_name:focus {
+  outline: none;
+}
+.modalOverlay .modalContent .formGroupInpt .formGroup .inpt_name::placeholder {
+  font-size: 18px;
+  font-family: Roboto, sans-serif;
+  color: #E1E0E0;
+}
 .modalOverlay .modalContent .closeIcon {
   position: absolute;
   top: 10px;
@@ -34,27 +71,128 @@
   font-size: 24px;
   cursor: pointer;
   color: #333;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease-in-out;
 }
-.modalOverlay .modalContent .function-list {
+.modalOverlay .modalContent .closeIcon:hover {
+  color: #000;
+}
+.modalOverlay .modalContent .functionList {
   margin-top: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
 }
-.modalOverlay .modalContent .function-item {
-  margin-bottom: 15px;
+.modalOverlay .modalContent .functionItem {
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: rgba(80, 149, 251, 0.29);
+  padding: 19px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  font-family: Roboto, sans-serif;
+  color: #686868;
 }
-.modalOverlay .modalContent .function-item button {
+.modalOverlay .modalContent .functionItem:hover {
+  background-color: rgba(80, 149, 251, 0.9);
+  color: #000;
+}
+.modalOverlay .modalContent .functionItem:active {
+  background-color: rgba(80, 149, 251, 0.9);
+}
+.modalOverlay .modalContent .selectedItem {
+  background-color: rgba(80, 149, 251, 0.9);
+  color: #000;
+}
+.modalOverlay .modalContent .selectedItem button {
   padding: 5px 10px;
-  background-color: #007bff;
+  background-color: #0650BF;
   color: #fff;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-.modalOverlay .modalContent .function-item button:hover {
-  background-color: #007bff;
+.modalOverlay .modalContent .selectedItem button:hover {
+  background-color: #0056b3;
+}
+.modalOverlay .modalContent .featureList {
+  margin-top: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+  font-family: Roboto, sans-serif;
+  color: #000000;
+}
+.modalOverlay .modalContent .featureList .about_feature {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+.modalOverlay .modalContent .featureList .about_feature .about_title {
+  color: #797777;
+}
+.modalOverlay .modalContent .featureItem {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modalOverlay .modalContent .featureItem button {
+  padding: 5px 10px;
+  background-color: #0650BF;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.modalOverlay .modalContent .featureItem button:hover {
+  background-color: #5095FB;
+}
+.modalOverlay .modalContent .nextButtonContainer {
+  margin-top: 20px;
+  text-align: center;
+}
+.modalOverlay .modalContent .nextButtonContainer .nextButton {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  padding: 19px 0;
+  background-color: #0650BF;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.modalOverlay .modalContent .nextButtonContainer .nextButton:hover {
+  background-color: #5095FB;
+}
+.modalOverlay .modalContent .voteSuccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.modalOverlay .modalContent .voteSuccess h2 {
+  font-family: Roboto, sans-serif;
+  font-size: 1.5rem;
+  color: #000;
+  margin-bottom: 10px;
+}
+.modalOverlay .modalContent .voteSuccess p {
+  font-family: Roboto, sans-serif;
+  font-size: 1rem;
+  color: #797777;
+  margin: 5px 0;
+}
+.modalOverlay .modalContent .voteSuccess img {
+  width: 140px;
+  height: auto;
+  margin: 10px 0;
 }
 
 /*# sourceMappingURL=Modal.module.css.map */

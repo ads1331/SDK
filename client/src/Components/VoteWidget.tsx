@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import Modal from './Modal';
 import styles from './VoteWidget.module.sass';
 
@@ -9,6 +8,7 @@ const VoteWidget = () => {
     const openModal = () => {
         setIsModalOpen(true);
     };
+
     const closeModal = () => {
         setIsModalOpen(false);
     };
@@ -16,7 +16,9 @@ const VoteWidget = () => {
     return (
         <div>
             <div className={styles.voteIcon} onClick={openModal}>
-                <span>Голосовать</span>
+                <span>
+                    <img src="../iconVote.png" alt="iconVote"/>
+                </span>
             </div>
             {isModalOpen && <Modal onClose={closeModal} />}
         </div>
